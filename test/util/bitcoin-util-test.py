@@ -127,6 +127,7 @@ def bctest(testDir, testObj, buildenv):
         # Compare data
         if a_parsed != b_parsed:
             logging.error("Output data mismatch for " + outputFn + " (format " + outputType + ")")
+            logging.error(a_parsed)
             data_mismatch = True
         # Compare formatting
         if outs[0] != outputData:
