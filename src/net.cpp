@@ -1573,6 +1573,10 @@ void CConnman::ThreadDNSAddressSeed()
                     addr.nTime = GetTime() - 3*nOneDay - GetRand(4*nOneDay); // use a random age between 3 and 7 days old
                     vAdd.push_back(addr);
                     found++;
+                    LogPrintf("addresses found from DNS seeds: %s - %s - %s\n", addr.ToStringIPPort(),addr.ToString(),addr.ToStringPort());
+                    LogPrintf("ip: %s - %s\n", ip.ToString(),ip.ToStringIP());
+                    LogPrintf("IsIPv4: %s - IsTor: %s - IsLocal: %s - IsRoutable: %s - IsInternal: %s - IsValid: %s\n", ip.IsIPv4()?"true":"false", ip.IsTor()?"true":"false",ip.IsLocal()?"true":"false",ip.IsRoutable()?"true":"false",ip.IsInternal()?"true":"false",ip.IsValid()?"true":"false");
+
                 }
                 addrman.Add(vAdd, resolveSource);
             } else {
