@@ -67,7 +67,7 @@ BOOST_AUTO_TEST_CASE(netbase_properties)
     BOOST_CHECK(ResolveIP("8.8.8.8").IsRoutable());
     BOOST_CHECK(ResolveIP("2001::1").IsRoutable());
     BOOST_CHECK(ResolveIP("127.0.0.1").IsValid());
-    BOOST_CHECK(CreateInternal("FD6C:E9FE:4549:edb1:8e4:3588:e546:35ca").IsInternal());
+    BOOST_CHECK(CreateInternal("FD4D:E9B8:024C:edb1:8e4:3588:e546:35ca").IsInternal());
     BOOST_CHECK(CreateInternal("bar.com").IsInternal());
 
 }
@@ -116,9 +116,12 @@ BOOST_AUTO_TEST_CASE(netbase_lookupnumeric)
     BOOST_CHECK(TestParse(":::", "[::]:0"));
 
     // verify that an internal address fails to resolve
-    BOOST_CHECK(TestParse("[fd6c:e9fe:4549:1:2:3:4:5]", "[::]:0"));
+    BOOST_CHECK(TestParse("[fd4d:e9b8:024c:1:2:3:4:5]", "[::]:0"));
     // and that a one-off resolves correctly
-    BOOST_CHECK(TestParse("[fd6d:e9fe:4549:1:2:3:4:5]", "[fd6d:e9fe:4549:1:2:3:4:5]:65535"));
+    CService addr(LookupNumeric("[fd4e:e9b8:024c:1:2:3:4:5]", 65535));
+    std::printf("[fd4e:e9b8:024c:1:2:3:4:5] - %s\n",addr.ToString().c_str());
+
+    BOOST_CHECK(TestParse("[fd4e:e9b8:024c:1:2:3:4:5]", "[fd4e:e9b8:24c:1:2:3:4:5]:65535"));
 }
 
 BOOST_AUTO_TEST_CASE(onioncat_test)
