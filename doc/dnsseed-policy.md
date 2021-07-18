@@ -51,4 +51,4 @@ situations but should be discussed in public in advance.
 
 See also
 ----------
-- [junecoin-seeder](https://github.com/pooler/junecoin-seeder) is a reference implementation of a DNS seed.
+- [junecoin-seeder](https://github.com/boris9a9/junecoin-seeder) is a reference implementation of a DNS seed.

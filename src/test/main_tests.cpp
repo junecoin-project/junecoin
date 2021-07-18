@@ -20,14 +20,35 @@ static void TestBlockSubsidyHalvings(const Consensus::Params& consensusParams)
 
     CAmount nPreviousSubsidy = nInitialSubsidy * 2; // for height == 0
     BOOST_CHECK_EQUAL(nPreviousSubsidy, nInitialSubsidy * 2);
+
+
     for (int nHalvings = 0; nHalvings < maxHalvings; nHalvings++) {
         int nHeight = nHalvings * consensusParams.nSubsidyHalvingInterval;
         CAmount nSubsidy = GetBlockSubsidy(nHeight, consensusParams);
-        BOOST_CHECK(nSubsidy <= nInitialSubsidy);
-        BOOST_CHECK_EQUAL(nSubsidy, nPreviousSubsidy / 2);
-        nPreviousSubsidy = nSubsidy;
+
+        if (nHeight <= 262800){
+            BOOST_CHECK(nSubsidy <= (nInitialSubsidy * 9));
+        }else{
+            BOOST_CHECK(nSubsidy <= nInitialSubsidy);
+            if (nHalvings == 1){
+                BOOST_CHECK_EQUAL(nSubsidy, nInitialSubsidy / 2);
+            }else{
+                BOOST_CHECK_EQUAL(nSubsidy, nPreviousSubsidy / 2);
+            }
+
+
+            nPreviousSubsidy = nSubsidy;
+        }
+
+
+
     }
-    BOOST_CHECK_EQUAL(GetBlockSubsidy(maxHalvings * consensusParams.nSubsidyHalvingInterval, consensusParams), 0);
+    if (maxHalvings * consensusParams.nSubsidyHalvingInterval > 262800){
+        BOOST_CHECK_EQUAL(GetBlockSubsidy(maxHalvings * consensusParams.nSubsidyHalvingInterval, consensusParams), 0);
+    }else{
+        BOOST_CHECK_EQUAL(GetBlockSubsidy(maxHalvings * consensusParams.nSubsidyHalvingInterval, consensusParams), nInitialSubsidy * 9);
+    }
+
 }
 
 static void TestBlockSubsidyHalvings(int nSubsidyHalvingInterval)
@@ -51,14 +72,16 @@ BOOST_AUTO_TEST_CASE(subsidy_limit_test)
     CAmount nSum = 0;
     for (int nHeight = 0; nHeight < 56000000; nHeight += 1000) {
         CAmount nSubsidy = GetBlockSubsidy(nHeight, chainParams->GetConsensus());
-//        if (nHeight != 1){
-//            BOOST_CHECK(nSubsidy <= INITIAL_BLOCK_REWARD * COIN);
-//        }
-        BOOST_CHECK(nSubsidy <= INITIAL_BLOCK_REWARD * COIN);
+        if (nHeight <= 262800){
+            BOOST_CHECK(nSubsidy <= 9 * INITIAL_BLOCK_REWARD * COIN);
+        }else{
+            BOOST_CHECK(nSubsidy <= INITIAL_BLOCK_REWARD * COIN);
+        }
+
         nSum += nSubsidy * 1000;
         BOOST_CHECK(MoneyRange(nSum));
     }
-    BOOST_CHECK_EQUAL(nSum, CAmount{788645161280074000});
+    BOOST_CHECK_EQUAL(nSum, CAmount{1840645161280074000});
 }
 
 static bool ReturnFalse() { return false; }
